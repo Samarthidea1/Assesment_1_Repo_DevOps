@@ -5,7 +5,15 @@
     image_name: hello-python
     image_tag: latest
     replicas: 1
-    
+
+  pre_tasks:
+  - name: install pre-requisites
+    pip:
+      name:
+        - openshift
+        - pyyaml
+        - kubernetes 
+      
   tasks: 
   - name: Create a Deployment for Hello App.
     k8s:
