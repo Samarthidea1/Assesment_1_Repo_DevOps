@@ -1,47 +1,52 @@
-# Setting host
 - hosts: localhost
   gather_facts: false
-  
-# Create Kubernetes resources to run Hello App.
-    - name: Create a Deployment for Hello App.
-      k8s:
-        state: present
-        definition:
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: hello-python
-            namespace: default
-          spec:
-            replicas: "{{ replicas }}"
-            selector:
-              matchLabels:
+  vars:
+    ansible_python_interpreter: '{{ ansible_playbook_python }}'
+    image_name: hello-python
+    image_tag: latest
+    replicas: 1
+    
+  tasks: 
+  - name: Create a Deployment for Hello App.
+    k8s:
+      state: present
+      definition:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: hello-python
+          namespace: default
+        spec:
+          replicas: '{{ replicas }}'
+          selector:
+            matchLabels:
+              app: hello-python
+          template:
+            metadata:
+              labels:
                 app: hello-python
-            template:
-              metadata:
-                labels:
-                  app: hello-python
-              spec:
-                containers:
+            spec:
+              containers:
                 - name: hello-python
-                  image: "{{ image_name }}:{{ image_tag }}"
+                  image: '{{ image_name }}:{{ image_tag }}'
                   imagePullPolicy: IfNotPresent
                   ports:
-                  - containerPort: 8180
-# Create Kubernetes Service (DNS required)
-    - name: Create a Service for Hello App.
-      k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: hello-python
-            namespace: default
+                    - containerPort: 8180
+                   
+  - name: Create a Service for Hello App.
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: hello-python
+          namespace: default
           spec:
             type: LoadBalancer
             ports:
-            - port: 8180
-              targetPort: 8180
+              - port: 8180
+                targetPort: 8180
             selector:
               app: hello-python
+
