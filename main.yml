@@ -39,7 +39,7 @@
                   image: '{{ image_name }}:{{ image_tag }}'
                   imagePullPolicy: IfNotPresent
                   ports:
-                    - containerPort: 8180
+                    - containerPort: 8000
                    
   - name: Create a Service for Hello App.
     k8s:
@@ -53,8 +53,8 @@
           spec:
             type: LoadBalancer
             ports:
-              - port: 8180
-                targetPort: 8180
+              - port: 8000
+                targetPort: 8000
             selector:
               app: hello-python
 
