@@ -6,8 +6,9 @@ metadata:
   name: k8s_python_sample_code
   namespace: k8s_python_sample_code
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
-  - port: 5035
+  - port: 8080
+    TargetPort: 3113
   selector:
   k8s-app: k8s_python_sample_code
